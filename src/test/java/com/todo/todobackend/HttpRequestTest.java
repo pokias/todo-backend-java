@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,5 +86,19 @@ public class HttpRequestTest {
         });
 
     }
+
+    @Test
+    public void searchNote() throws Exception {
+        NoteEntity note = new NoteEntity("testi note", 123L);
+        //create note to db
+        mockMvc.perform(post("/note/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(note)));
+
+        mockMvc.perform(get("/note/")).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
 }
 
