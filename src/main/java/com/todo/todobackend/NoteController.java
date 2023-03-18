@@ -24,24 +24,18 @@ public class NoteController {
 
     @GetMapping("/poster/{id}")
     List<NoteEntity> allByPoster(@PathVariable Long id) {
-        return repository.getNotesByPoster(id);
+        return repository.findAllByPoster(id);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     NoteEntity one(@PathVariable Long id) {
-        return repository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+        return repository.findNote(id);
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     NoteEntity createNote(@RequestBody NoteEntity note) {
-        return repository.save(note);
-    }
-
-    @PutMapping("/")
-    @ResponseStatus(HttpStatus.CREATED)
-    NoteEntity createNotePut(@RequestBody NoteEntity note) {
         return repository.save(note);
     }
 
@@ -49,6 +43,12 @@ public class NoteController {
     @ResponseStatus(HttpStatus.OK)
     void deleteNote(@PathVariable Long id) {
         repository.deleteNote(id);
+    }
+
+    @PatchMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    NoteEntity updateNote(@PathVariable NoteEntity note) {
+        return repository.updateNote(note);
     }
 
 }

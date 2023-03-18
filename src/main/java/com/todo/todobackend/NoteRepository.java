@@ -1,23 +1,50 @@
 package com.todo.todobackend;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface NoteRepository extends JpaRepository<NoteEntity, Long> {
+@Repository
+public class NoteRepository {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Query(value = "DELETE FROM NOTE WHERE id = ?!", nativeQuery = true)
-    void deleteNote(Long id);
+    @Transactional
+    public NoteEntity save(NoteEntity note) {
+        entityManager.persist(note);
+        return note;
+    }
 
+    public List<NoteEntity> findAll() {
+        TypedQuery<NoteEntity> query = entityManager.createQuery("SELECT t FROM NoteEntity t", NoteEntity.class);
+        return query.getResultList();
+    }
 
-    @Query(value = "SELECT * from NOTE", nativeQuery = true)
-    List<NoteEntity> getAllNotes();
+    public List<NoteEntity> findAllByPoster(Long posterId) {
+        TypedQuery<NoteEntity> query = entityManager.createQuery("SELECT t FROM NoteEntity t where poster = :posterId", NoteEntity.class);
+        return query.setParameter("posterId", posterId).getResultList();
+    }
 
-    @Query(value = "SELECT * from NOTE where id = ?1", nativeQuery = true)
-    NoteEntity getNote(Long id);
+    public NoteEntity findNote(Long id) {
+        return entityManager.find(NoteEntity.class, id);
+    }
 
-    @Query(value = "SELECT * from NOTE where poster = ?1", nativeQuery = true)
-    List<NoteEntity> getNotesByPoster(Long posterId);
+    @Transactional
+    public NoteEntity updateNote(NoteEntity note) {
+        entityManager.merge(note);
+        return note;
+    }
+
+    @Transactional
+    public void deleteNote(Long id) {
+        NoteEntity note = findNote(id);
+        if (note != null) {
+            entityManager.remove(note);
+        }
+    }
 }

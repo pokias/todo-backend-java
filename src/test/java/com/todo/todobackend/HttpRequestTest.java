@@ -1,22 +1,39 @@
 package com.todo.todobackend;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-@WebMvcTest(NoteController.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class HttpRequestTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @InjectMocks
+    NoteController noteController;
 
-    @MockBean
-    private NoteController noteController;
+    @Mock
+    NoteRepository noteRepository;
 
     @Test
-    public void getNotes() throws Exception {
+    public void addTestNote() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
+        when(noteController.createNote(any(NoteEntity.class))).thenReturn(null);
+
+        NoteEntity note = new NoteEntity("xd testi note", 123L);
+        NoteEntity savedNote = noteController.createNote(note);
+
+        assertThat(savedNote.getNote().equals(note.getNote()));
+        assertThat(savedNote.getId() != null);
     }
 }
+
