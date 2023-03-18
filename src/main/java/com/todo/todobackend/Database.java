@@ -10,11 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class Database {
 
     private static final Logger log = LoggerFactory.getLogger(Database.class);
+
     @Bean
-    CommandLineRunner initDatabase(NoteRepository repository){
+    CommandLineRunner initDatabase(NoteRepository repository) {
         return args -> {
-            log.info("testing " +  repository.save(new NoteEntity("long note", 123L)));
-            log.info("testing " +  repository.save(new NoteEntity( "long note 2", 124L)));
+            log.info("testing " + repository.save(new NoteEntity("long note", 123L)));
+            log.info("testing " + repository.save(new NoteEntity("long note 2", 124L)));
         };
     }
 }

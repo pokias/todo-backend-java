@@ -2,14 +2,19 @@ package com.todo.todobackend;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Table;
 
-@Entity public class NoteEntity {
+@Entity
+@Table(name = "NOTE")
+public class NoteEntity {
     private @jakarta.persistence.Id
     @GeneratedValue Long Id;
     private String note;
     private Long poster;
 
-    NoteEntity(){}
+    NoteEntity() {
+    }
+
     public NoteEntity(String note, Long poster) {
         this.note = note;
         this.poster = poster;
@@ -19,8 +24,16 @@ import jakarta.persistence.GeneratedValue;
         return Id;
     }
 
+    public void setId(Long id) {
+        Id = id;
+    }
+
     public Long getPoster() {
         return poster;
+    }
+
+    public void setPoster(Long poster) {
+        this.poster = poster;
     }
 
     public String getNote() {
@@ -29,13 +42,5 @@ import jakarta.persistence.GeneratedValue;
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public void setId(Long id) {
-        Id = id;
-    }
-
-    public void setPoster(Long poster) {
-        this.poster = poster;
     }
 }

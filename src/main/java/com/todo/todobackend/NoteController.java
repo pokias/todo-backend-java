@@ -1,40 +1,54 @@
 package com.todo.todobackend;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/note")
 public class NoteController {
-private final NoteRepository repository;
+    @Autowired
+    private final NoteRepository repository;
 
-    NoteController(NoteRepository repository){
-        this.repository=repository;
+    NoteController(NoteRepository repository) {
+        this.repository = repository;
     }
 
-    @GetMapping("/notes")
-    List<NoteEntity> all(){
+    @GetMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    List<NoteEntity> all() {
         return repository.findAll();
     }
 
-    @GetMapping("/note/{id}")
-    NoteEntity one(@PathVariable long id){
-    return repository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+    @GetMapping("/poster/{id}")
+    List<NoteEntity> allByPoster(@PathVariable Long id) {
+        return repository.getNotesByPoster(id);
     }
 
-    @PostMapping("/note")
-    NoteEntity createNote(@RequestBody NoteEntity note) {
-      return repository.save(note);
-    };
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    NoteEntity one(@PathVariable Long id) {
+        return repository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+    }
 
-    @PutMapping("/note")
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
+    NoteEntity createNote(@RequestBody NoteEntity note) {
+        return repository.save(note);
+    }
+
+    @PutMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     NoteEntity createNotePut(@RequestBody NoteEntity note) {
         return repository.save(note);
-    };
+    }
 
-    @DeleteMapping("/note/{id}")
-    void deleteNote(@PathVariable Long id){
-        repository.deleteById(id);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    void deleteNote(@PathVariable Long id) {
+        repository.deleteNote(id);
     }
 
 }
