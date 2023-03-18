@@ -2,13 +2,14 @@ package com.todo.todobackend;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "NOTE")
 public class NoteEntity {
     private @jakarta.persistence.Id
-    @GeneratedValue Long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) Long Id;
     private String note;
     private Long poster;
 
